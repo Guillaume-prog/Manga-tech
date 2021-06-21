@@ -3,15 +3,19 @@ package dev.regucorp.manga_tech;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import dev.regucorp.manga_tech.data.models.MangaModel;
+import dev.regucorp.manga_tech.data.MangaEntry;
+import dev.regucorp.manga_tech.data.MangaModel;
 
 public class MainActivity extends BaseActivity {
+
+    private static final String TAG = "MainActivity";
 
     private LinearLayout mangaList;
     private Button addMangaBtn;
@@ -21,7 +25,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mangaList = findViewById(R.id.book_list);
+        mangaList = findViewById(R.id.borrowed_list);
         addMangaBtn = findViewById(R.id.add_manga);
 
         addMangaBtn.setOnClickListener(v -> {
@@ -37,53 +41,37 @@ public class MainActivity extends BaseActivity {
     }
 
     private void addEntry() {
-        String name = ((EditText) findViewById(R.id.manga_name)).getText().toString();
-        int volumes = Integer.parseInt(((EditText) findViewById(R.id.manga_volumes)).getText().toString());
+        String name = getInputValue(R.id.manga_name);
+        String person = getInputValue(R.id.manga_person);
+        int start = Integer.parseInt(getInputValue(R.id.manga_start));
+        int end = Integer.parseInt(getInputValue(R.id.manga_end));
 
-        String ownedVols = new String(new char[volumes]).replace('\0', '0');
-        MangaModel.getInstance().addEntry(db, name, volumes, ownedVols);
+        MangaEntry entry = new MangaEntry(MangaEntry.BORROW, person, name, start, end);
+        MangaModel.getInstance().addEntry(db, entry);
 
         toast("Manga added to collection");
-        showManga(mangaList, name, ownedVols, volumes);
+        showManga(mangaList, entry);
     }
 
     private void showEntries(LinearLayout mangaList) {
-        Cursor mangas = MangaModel.getInstance().getEntries(db);
-
-        if(mangas.moveToFirst()) {
-            do {
-                showManga(mangaList, mangas.getString(MangaModel.MANGA_NAME), mangas.getString(MangaModel.MANGA_OWNED), mangas.getInt(MangaModel.MANGA_VOLUMES));
-            } while(mangas.moveToNext());
+        MangaEntry mangas[] = MangaModel.getInstance().get(db, MangaEntry.BORROW);
+        Log.d(TAG, "showEntries: "+mangas.length);
+        if(mangas != null) {
+            for (MangaEntry m : mangas) {
+                Log.d(TAG, "showEntries: "+m);
+                showManga(mangaList, m);
+            }
         } else {
             showNoManga();
         }
     }
 
-    private void showManga(LinearLayout mangaList, String name, String owned, int volumes) {
-
+    private void showManga(LinearLayout mangaList, MangaEntry m) {
         View manga = load(R.layout.manga_component);
 
-        ((TextView) manga.findViewById(R.id.manga_entry_name)).setText(name);
-        ((TextView) manga.findViewById(R.id.manga_entry_num_vols_owned)).setText(String.valueOf(getNumManga(owned)));
-        ((TextView) manga.findViewById(R.id.manga_entry_num_vols)).setText(String.valueOf(volumes));
-
-        manga.setOnClickListener(v -> {
-            // Create intent for other window
-            Intent i = new Intent(getApplicationContext(), MangaViewActivity.class);
-            i.putExtra("manga_title", name);
-            i.putExtra("manga_num_vols", volumes);
-            i.putExtra("manga_vols_owned", owned);
-
-            startActivity(i);
-        });
-
-        manga.setOnLongClickListener(v -> {
-            MangaModel.getInstance().deleteManga(db, name);
-            mangaList.removeView(manga);
-            toast("Removed '"+ name +"' from list");
-            if(mangaList.getChildCount() == 0) showNoManga();
-            return true;
-        });
+        setTextValue(manga, R.id.manga_name, m.getName());
+        setTextValue(manga, R.id.manga_person, m.getPerson());
+        setTextValue(manga, R.id.manga_vols, (m.getEndVolume() - m.getStartVolume() + 1) + " Volumes");
 
         mangaList.addView(manga);
     }
@@ -94,11 +82,13 @@ public class MainActivity extends BaseActivity {
         mangaList.addView(tv);
     }
 
-    private int getNumManga(String owned) {
-        int num = 0;
-        for(char c : owned.toCharArray()) {
-            if(c == '1') num++;
-        }
-        return num;
+    // Lazy functions
+
+    private String getInputValue(int id) {
+        return ((EditText) findViewById(id)).getText().toString();
+    }
+
+    private void setTextValue(View parent, int id, String value) {
+        ((TextView) parent.findViewById(id)).setText(value);
     }
 }

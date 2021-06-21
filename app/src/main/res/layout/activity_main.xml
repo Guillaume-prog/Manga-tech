@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
         <LinearLayout
-            android:id="@+id/book_list"
+            android:id="@+id/borrowed_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
@@ -23,24 +23,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="8dp">
 
         <EditText
             android:id="@+id/manga_name"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Manga_titile"
-            />
+            android:hint="Manga name" />
 
         <EditText
-            android:id="@+id/manga_volumes"
-            android:layout_width="100dp"
+            android:id="@+id/manga_person"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="volumes"
-            android:layout_marginLeft="8dp"/>
+            android:hint="Person"
+            android:layout_marginTop="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/manga_start"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="Start volume"/>
+
+            <EditText
+                android:id="@+id/manga_end"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="End volume"
+                android:layout_marginLeft="8dp"/>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/add_manga"
@@ -48,7 +70,7 @@
             android:layout_height="wrap_content"
             android:text="Add entry"
             android:layout_gravity="center"
-            android:layout_marginLeft="8dp"/>
+            android:layout_marginTop="20dp"/>
 
     </LinearLayout>
 

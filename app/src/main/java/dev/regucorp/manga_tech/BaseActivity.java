@@ -1,6 +1,7 @@
 package dev.regucorp.manga_tech;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,11 +12,13 @@ import dev.regucorp.manga_tech.data.DataHandler;
 public class BaseActivity extends AppCompatActivity {
 
         protected DataHandler db;
+        protected LayoutInflater inflater;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if(db == null) db = DataHandler.getInstance(this);
+            db = DataHandler.getInstance(this);
+            inflater = getLayoutInflater();
         }
 
         protected void toast(String text) {
@@ -23,7 +26,7 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         protected View load(int resid) {
-            return getLayoutInflater().inflate(resid, null);
+            return inflater.inflate(resid, null);
         }
 
 }
