@@ -52,11 +52,10 @@ public class MangaModel {
     public MangaEntry[] get(DataHandler db, int type) {
         MangaEntry[] entries = null;
 
-        int numRows = getNumRows(db);
-        Log.d(TAG, "get: "+numRows);
-        if(numRows > 0) {
-            Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ TABLE_NAME +" WHERE type = "+ type +";", null);
-            entries = new MangaEntry[numRows];
+        Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ TABLE_NAME +" WHERE type = "+ type +";", null);
+        Log.d(TAG, "get: "+c.getCount());
+        if(c.getCount() > 0) {
+            entries = new MangaEntry[c.getCount()];
 
             c.moveToFirst();
             do {
@@ -75,9 +74,13 @@ public class MangaModel {
     }
 
     private int getNumRows(DataHandler db) {
+        int num = 0;
+
         Cursor c = db.getReadableDatabase().rawQuery("SELECT COUNT(*) FROM"+ TABLE_NAME +";", null);
-        c.moveToFirst();
-        return c.getInt(0);
+        if(c.moveToFirst()) num = c.getInt(0);
+        c.close();
+
+        return num;
     }
 
     public void deleteEntry(DataHandler db, MangaEntry entry) {
