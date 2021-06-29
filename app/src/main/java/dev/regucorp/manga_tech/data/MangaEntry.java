@@ -1,6 +1,9 @@
 package dev.regucorp.manga_tech.data;
 
-public class MangaEntry {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class MangaEntry implements Parcelable {
 
     public static final int BORROW = 0;
     public static final int LEND = 1;
@@ -17,6 +20,15 @@ public class MangaEntry {
         this.numVolumes = numVolumes;
 
         owned = new String(new char[numVolumes]).replace('\0', '0');
+    }
+
+    // Parcel constructor
+    public MangaEntry(Parcel in) {
+        this.type = in.readInt();
+        this.person = in.readString();
+        this.name = in.readString();
+        this.numVolumes = in.readInt();
+        this.owned = in.readString();
     }
 
     public void setId(int id) {
@@ -54,10 +66,30 @@ public class MangaEntry {
     }
 
     public int getNumOwned() {
-        int num = 0;
-        for(char c : owned.toCharArray()) {
-            if(c == '1') num++;
-        }
-        return num;
+        return owned.length() - owned.replace("1", "").length();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.type);
+        dest.writeString(this.person);
+        dest.writeString(this.name);
+        dest.writeInt(this.numVolumes);
+        dest.writeString(this.owned);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public MangaEntry createFromParcel(Parcel in) {
+            return new MangaEntry(in);
+        }
+
+        public MangaEntry[] newArray(int size) {
+            return new MangaEntry[size];
+        }
+    };
 }

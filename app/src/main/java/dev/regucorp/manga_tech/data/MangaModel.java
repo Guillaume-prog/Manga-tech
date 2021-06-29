@@ -66,6 +66,7 @@ public class MangaModel {
                         c.getString(3),
                         c.getInt(4));
 
+                entries[c.getPosition()].setOwned(c.getString(5));
                 entries[c.getPosition()].setId(c.getInt(0));
             } while(c.moveToNext());
         }
@@ -73,17 +74,35 @@ public class MangaModel {
         return entries;
     }
 
-    private int getNumRows(DataHandler db) {
-        int num = 0;
+    public MangaEntry getByName(DataHandler db, String name) {
+        Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ TABLE_NAME +" WHERE name = '"+ name +"';", null);
 
-        Cursor c = db.getReadableDatabase().rawQuery("SELECT COUNT(*) FROM"+ TABLE_NAME +";", null);
-        if(c.moveToFirst()) num = c.getInt(0);
-        c.close();
+        MangaEntry manga = null;
+        if(c.moveToFirst()) {
+            manga = new MangaEntry(
+                c.getInt(1),
+                c.getString(2),
+                c.getString(3),
+                c.getInt(4));
 
-        return num;
+            manga.setOwned(c.getString(5));
+            manga.setId(c.getInt(0));
+        }
+
+        return manga;
+    }
+
+    public void updateEntry(DataHandler db, MangaEntry entry) {
+        String sql = "UPDATE "+ TABLE_NAME +" SET owned = '" + entry.getOwned() + "' WHERE name = '" + entry.getName() + "';";
+        Cursor c = db.getWritableDatabase().rawQuery(sql, null);
+        Log.d(TAG, "updateEntry: "+sql);
+
+        int numRows = c.getCount();
+        Log.d(TAG, "updateEntry: "+numRows);
     }
 
     public void deleteEntry(DataHandler db, MangaEntry entry) {
-        db.getWritableDatabase().execSQL("DELETE FROM "+ TABLE_NAME +" WHERE name = '"+ entry.getName() +"';");
+        db.getWritableDatabase().delete(TABLE_NAME, "name = '" + entry.getName() +  "'", null);
+        //db.getWritableDatabase().execSQL("DELETE FROM "+ TABLE_NAME +" WHERE name = '"+ entry.getName() +"';");
     }
 }

@@ -1,9 +1,11 @@
 package dev.regucorp.manga_tech;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ public class TabFragment extends Fragment {
     private DataHandler db;
 
     private LinearLayout ll;
+    private View lastView;
 
     public TabFragment(DataHandler db, MangaEntry[] entryList) {
         this.db = db;
@@ -46,6 +49,23 @@ public class TabFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if(lastView != null) {
+            TextView titleView = lastView.findViewById(R.id.manga_name);
+            String title = titleView.getText().toString();
+
+            MangaEntry updatedEntry = MangaModel.getInstance().getByName(db, title);
+            int oldIndex = ll.indexOfChild(lastView);
+            ll.removeView(lastView);
+
+            ll.addView(genManga(updatedEntry), oldIndex);
+            lastView = null;
+        }
+    }
+
     public void init() {
         if(startEntries != null) {
             for(MangaEntry e : startEntries) {
@@ -57,6 +77,10 @@ public class TabFragment extends Fragment {
     }
 
     public void addManga(MangaEntry entry) {
+        ll.addView(genManga(entry));
+    }
+
+    public View genManga(MangaEntry entry) {
         View v = getLayoutInflater().inflate(R.layout.manga_component, null);
         String percentage = entry.getNumOwned() + "/" + entry.getNumVolumes();
 
@@ -66,7 +90,8 @@ public class TabFragment extends Fragment {
 
         // Access manga vols
         v.setOnClickListener(view -> {
-            // TODO : Send to new activity
+            lastView = v;
+            sendToActivity(entry);
         });
 
         // Delete
@@ -79,10 +104,18 @@ public class TabFragment extends Fragment {
             return true;
         });
 
+        if(entries.size() == 0) ll.removeAllViews();
         entries.add(entry);
-        if(entries.size() > 0) ll.removeAllViews();
 
-        ll.addView(v);
+        return v;
+    }
+
+
+    private void sendToActivity(MangaEntry e) {
+        Intent intent = new Intent(getActivity(), MangaViewActivity.class);
+        intent.putExtra("manga", e);
+
+        startActivity(intent);
     }
 
     private void setText(View v, int resid, String text) {

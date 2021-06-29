@@ -39,6 +39,13 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
     private void addEntry(AlertDialog d) {
         String mangaName = getValue(d, R.id.manga_name);
         String mangaPerson = getValue(d, R.id.manga_person);
