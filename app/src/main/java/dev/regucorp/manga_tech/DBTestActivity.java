@@ -13,7 +13,7 @@ import dev.regucorp.manga_tech.data.MangaModel;
 
 public class DBTestActivity extends BaseActivity {
 
-    private static final String TAG = "MainActivity";
+    /*private static final String TAG = "MainActivity";
 
     private LinearLayout mangaList;
     private Button addMangaBtn;
@@ -21,7 +21,7 @@ public class DBTestActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.db_test_act);
+        setContentView(R.layout.add_entry_dialog);
 
         mangaList = findViewById(R.id.borrowed_list);
         addMangaBtn = findViewById(R.id.add_manga);
@@ -44,7 +44,7 @@ public class DBTestActivity extends BaseActivity {
         int start = Integer.parseInt(getInputValue(R.id.manga_start));
         int end = Integer.parseInt(getInputValue(R.id.manga_end));
 
-        MangaEntry entry = new MangaEntry(MangaEntry.BORROW, person, name, start, end);
+        MangaEntry entry = new MangaEntry(MangaEntry.BORROW, person, name, start);
         MangaModel.getInstance().addEntry(db, entry);
 
         toast("Manga added to collection");
@@ -69,7 +69,7 @@ public class DBTestActivity extends BaseActivity {
 
         setTextValue(manga, R.id.manga_name, m.getName());
         setTextValue(manga, R.id.manga_person, m.getPerson());
-        setTextValue(manga, R.id.manga_vols, (m.getEndVolume() - m.getStartVolume() + 1) + " Volumes");
+        setTextValue(manga, R.id.manga_vols, "0 Volumes");
 
         mangaList.addView(manga);
     }
@@ -88,5 +88,5 @@ public class DBTestActivity extends BaseActivity {
 
     private void setTextValue(View parent, int id, String value) {
         ((TextView) parent.findViewById(id)).setText(value);
-    }
+    }*/
 }

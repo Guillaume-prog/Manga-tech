@@ -6,15 +6,17 @@ public class MangaEntry {
     public static final int LEND = 1;
 
     private int id;
-    private final int type, startVolume, endVolume;
+    private final int type, numVolumes;
     private final String person, name;
+    private String owned;
 
-    public MangaEntry(int type, String person, String name, int startVolume, int endVolume) {
+    public MangaEntry(int type, String person, String name, int numVolumes) {
         this.type = type;
         this.person = person;
         this.name = name;
-        this.startVolume = startVolume;
-        this.endVolume = endVolume;
+        this.numVolumes = numVolumes;
+
+        owned = new String(new char[numVolumes]).replace('\0', '0');
     }
 
     public void setId(int id) {
@@ -29,12 +31,8 @@ public class MangaEntry {
         return type;
     }
 
-    public int getStartVolume() {
-        return startVolume;
-    }
-
-    public int getEndVolume() {
-        return endVolume;
+    public int getNumVolumes() {
+        return numVolumes;
     }
 
     public String getPerson() {
@@ -43,5 +41,23 @@ public class MangaEntry {
 
     public String getName() {
         return name;
+    }
+
+
+    public String getOwned() {
+        return owned;
+    }
+
+    public void setOwned(String owned) {
+        if(owned.length() == this.owned.length())
+            this.owned = owned;
+    }
+
+    public int getNumOwned() {
+        int num = 0;
+        for(char c : owned.toCharArray()) {
+            if(c == '1') num++;
+        }
+        return num;
     }
 }

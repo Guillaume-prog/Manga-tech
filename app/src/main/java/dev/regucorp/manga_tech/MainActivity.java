@@ -1,22 +1,12 @@
 package dev.regucorp.manga_tech;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AlertDialog;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -40,10 +30,29 @@ public class MainActivity extends BaseActivity {
         setupTabs();
 
         ImageButton button = findViewById(R.id.add_button);
-        button.setOnClickListener(v -> {
-            TabFragment fr = (TabFragment) adapter.getItem(tabLayout.getSelectedTabPosition());
-            fr.addManga(new MangaEntry(MangaEntry.BORROW, "Johnny D.", "Deathnote", 4, 10));
+        button.setOnClickListener(showDialogBtn -> {
+            AlertDialog dialog = createDialog();
+            dialog.show();
+
+            Button submit = dialog.findViewById(R.id.dialog_add_manga);
+            submit.setOnClickListener(addMangaBtn -> addEntry(dialog));
         });
+    }
+
+    private void addEntry(AlertDialog d) {
+        String mangaName = getValue(d, R.id.manga_name);
+        String mangaPerson = getValue(d, R.id.manga_person);
+        int mangaVols = Integer.parseInt(getValue(d, R.id.manga_vols));
+        int type = (tabLayout.getSelectedTabPosition() == 0) ? MangaEntry.BORROW : MangaEntry.LEND;
+
+        MangaEntry entry = new MangaEntry(type, mangaPerson, mangaName, mangaVols);
+        MangaModel.getInstance().addEntry(db, entry);
+
+        TabFragment fr = (TabFragment) adapter.getItem(tabLayout.getSelectedTabPosition());
+        fr.addManga(entry);
+
+        d.dismiss();
+        toast("Added manga");
     }
 
     private void setupTabs() {
@@ -52,13 +61,24 @@ public class MainActivity extends BaseActivity {
         MangaEntry[] borrowed = MangaModel.getInstance().get(db, MangaEntry.BORROW);
         MangaEntry[] lent = MangaModel.getInstance().get(db, MangaEntry.LEND);
 
-        adapter.add("Borrowed", new TabFragment(borrowed));
-        adapter.add("Lent", new TabFragment(lent));
+        adapter.add("Borrowed", new TabFragment(db, borrowed));
+        adapter.add("Lent", new TabFragment(db, lent));
 
         adapter.setUpPager(tabLayout, viewPager);
     }
 
+    private AlertDialog createDialog() {
+        View dialogView = load(R.layout.add_entry_dialog);
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setView(dialogView);
+        return builder.create();
+    }
+
+    private String getValue(AlertDialog d, int resid) {
+        EditText e = d.findViewById(resid);
+        return e.getText().toString();
+    }
 
     /*private void addEntry() {
         String name = getInputValue(R.id.manga_name);

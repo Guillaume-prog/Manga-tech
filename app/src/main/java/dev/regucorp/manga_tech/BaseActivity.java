@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import dev.regucorp.manga_tech.data.DataHandler;
+import dev.regucorp.manga_tech.data.MangaModel;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -17,6 +18,9 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            MangaModel.createInstance(getResources());
+
             db = DataHandler.getInstance(this);
             inflater = getLayoutInflater();
         }

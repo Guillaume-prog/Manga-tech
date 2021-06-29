@@ -13,20 +13,27 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import dev.regucorp.manga_tech.data.DataHandler;
 import dev.regucorp.manga_tech.data.MangaEntry;
 import dev.regucorp.manga_tech.data.MangaModel;
 
 public class TabFragment extends Fragment {
 
     private String TAG = "TabFragment";
-    private int numEntries;
-    private MangaEntry[] entries;
+    private List<MangaEntry> entries = new ArrayList<MangaEntry>();
+    private MangaEntry[] startEntries;
+
+    private DataHandler db;
 
     private LinearLayout ll;
 
-    public TabFragment(MangaEntry[] entries) {
-        numEntries = 0;
-        this.entries = entries;
+    public TabFragment(DataHandler db, MangaEntry[] entryList) {
+        this.db = db;
+        this.startEntries = entryList;
     }
 
     @Override
@@ -40,8 +47,8 @@ public class TabFragment extends Fragment {
     }
 
     public void init() {
-        if(entries != null) {
-            for(MangaEntry e : entries) {
+        if(startEntries != null) {
+            for(MangaEntry e : startEntries) {
                 addManga(e);
             }
         } else {
@@ -51,14 +58,31 @@ public class TabFragment extends Fragment {
 
     public void addManga(MangaEntry entry) {
         View v = getLayoutInflater().inflate(R.layout.manga_component, null);
+        String percentage = entry.getNumOwned() + "/" + entry.getNumVolumes();
 
         setText(v, R.id.manga_name, entry.getName());
         setText(v, R.id.manga_person, entry.getPerson());
-        setText(v, R.id.manga_vols, "4/12");
+        setText(v, R.id.manga_vols, percentage);
 
-        if(numEntries == 0) ll.removeAllViews();
+        // Access manga vols
+        v.setOnClickListener(view -> {
+            // TODO : Send to new activity
+        });
+
+        // Delete
+        v.setOnLongClickListener(view -> {
+            ll.removeView(v);
+            MangaModel.getInstance().deleteEntry(db, entry);
+
+            entries.remove(entry);
+            if(entries.size() == 0) showNoEntries();
+            return true;
+        });
+
+        entries.add(entry);
+        if(entries.size() > 0) ll.removeAllViews();
+
         ll.addView(v);
-        numEntries++;
     }
 
     private void setText(View v, int resid, String text) {

@@ -1,6 +1,7 @@
 package dev.regucorp.manga_tech.data;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -18,7 +19,7 @@ public class DataHandler extends SQLiteOpenHelper {
 
     // DB info
     private static final String DB_NAME = "mangatech";
-    private static final int DB_VERSION = 10;
+    private static final int DB_VERSION = 11;
 
     private DataHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

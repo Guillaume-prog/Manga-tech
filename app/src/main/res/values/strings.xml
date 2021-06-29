@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Manga-Tech</string>
+
+    <!-- All stuff SQL related -->
+    <string name="sql_manga_table_create">CREATE TABLE %s (
+        id           INT          PRIMARY KEY,
+        type         INT          NOT NULL,
+        person       VARCHAR(255) NOT NULL,
+        name         VARCHAR(255) NOT NULL,
+        num_volumes  INT          NOT NULL,
+        owned        TEXT         NOT NULL
+    );</string>
 </resources>

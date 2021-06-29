@@ -1,35 +1,36 @@
 package dev.regucorp.manga_tech.data;
 
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import dev.regucorp.manga_tech.R;
 
 public class MangaModel {
 
     private static final String TAG = "MangaModel";
 
     private static MangaModel instance;
+
+    public static void createInstance(Resources resources) {
+        if(instance == null) instance = new MangaModel(resources);
+    }
+
     public static MangaModel getInstance() {
-        if(instance == null) instance = new MangaModel();
         return instance;
     }
 
     private static final String TABLE_NAME = "manga_ledger";
+    private Resources res;
 
-    private MangaModel() {
-
+    private MangaModel(Resources res) {
+        this.res = res;
     }
 
     public void createTable(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+ TABLE_NAME +"(" +
-                "id           INT          PRIMARY KEY, " +
-                "type         INT          NOT NULL, " +
-                "person       VARCHAR(255) NOT NULL, " +
-                "name         VARCHAR(255) NOT NULL, " +
-                "start_volume INT          NOT NULL, " +
-                "end_volume   INT          NOT NULL" +
-                ");");
+        db.execSQL(res.getString(R.string.sql_manga_table_create, TABLE_NAME));
         Log.d("HI", "createTable: table created");
     }
 
@@ -43,8 +44,8 @@ public class MangaModel {
         cv.put("type", entry.getType());
 
         cv.put("name", entry.getName());
-        cv.put("start_volume", entry.getStartVolume());
-        cv.put("end_volume", entry.getEndVolume());
+        cv.put("num_volumes", entry.getNumVolumes());
+        cv.put("owned", entry.getOwned());
 
         db.getWritableDatabase().insert(TABLE_NAME, null, cv);
     }
@@ -63,8 +64,7 @@ public class MangaModel {
                         c.getInt(1),
                         c.getString(2),
                         c.getString(3),
-                        c.getInt(4),
-                        c.getInt(5));
+                        c.getInt(4));
 
                 entries[c.getPosition()].setId(c.getInt(0));
             } while(c.moveToNext());
@@ -84,6 +84,6 @@ public class MangaModel {
     }
 
     public void deleteEntry(DataHandler db, MangaEntry entry) {
-        db.getWritableDatabase().execSQL("DELETE FROM "+ TABLE_NAME +" WHERE id = "+ entry.getId() +";");
+        db.getWritableDatabase().execSQL("DELETE FROM "+ TABLE_NAME +" WHERE name = '"+ entry.getName() +"';");
     }
 }
