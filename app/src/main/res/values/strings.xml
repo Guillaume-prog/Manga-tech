@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Manga-Tech</string>
+    <string name="app_version">pre-alpha</string>
+
+    <string name="version_url">https://regucorp.tk/manga-tech/version</string>
+    <string name="update_url">https://regucorp.tk/manga-tech/</string>
+
+    <string name="new_version_text">A new version of the app is available. Go to the website to download it.</string>
 
     <!-- All stuff SQL related -->
     <string name="sql_manga_table_create">CREATE TABLE %s (

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import dev.regucorp.manga_tech.data.DataHandler;
@@ -31,6 +32,14 @@ public class BaseActivity extends AppCompatActivity {
 
         protected View load(int resid) {
             return inflater.inflate(resid, null);
+        }
+
+        protected AlertDialog createDialog(int layout_id) {
+            View dialogView = load(layout_id);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
+            builder.setView(dialogView);
+            return builder.create();
         }
 
 }
