@@ -2,41 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="20dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/manga_name"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Title"
             android:layout_marginEnd="20dp"
-            android:textSize="10.5pt"/>
+            android:layout_weight="1"
+            android:fontFamily="@font/teko_light"
+            android:text="Title"
+            android:textSize="24sp" />
 
 
-        <TextView
-            android:id="@+id/manga_vols"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="10pt"
-            android:textColor="@color/purple_500"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_user"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/manga_person"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/dosis"
+                android:text="John Doe"
+                android:textSize="8pt" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
+
     <TextView
-        android:id="@+id/manga_person"
-        android:layout_width="match_parent"
+        android:id="@+id/manga_vols"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="8pt"
-        android:text="John Doe"/>
+        android:text="0 Vols"
+        android:textSize="10pt"
+        android:layout_gravity="center"
+        android:textColor="@color/primary_800"/>
 
 
 

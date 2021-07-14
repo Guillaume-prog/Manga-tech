@@ -82,7 +82,7 @@ public class TabFragment extends Fragment {
 
     public View genManga(MangaEntry entry) {
         View v = getLayoutInflater().inflate(R.layout.manga_component, null);
-        String percentage = entry.getNumOwned() + "/" + entry.getNumVolumes();
+        String percentage = entry.getNumOwned() + " Vols";
 
         setText(v, R.id.manga_name, entry.getName());
         setText(v, R.id.manga_person, entry.getPerson());

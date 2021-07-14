@@ -2,10 +2,12 @@ package dev.regucorp.manga_tech;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,6 +26,10 @@ public class MangaViewActivity extends BaseActivity {
 
         this.manga = getIntent().getExtras().getParcelable("manga");
         renderUI();
+
+        ImageView backBtn = findViewById(R.id.back_button);
+        Intent backIntent = new Intent(this, MainActivity.class);
+        backBtn.setOnClickListener(v -> onBackPressed());
     }
 
     private void renderUI() {
@@ -54,15 +60,13 @@ public class MangaViewActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         String newOwned = new String(ownedVols);
-
         if(!manga.getOwned().equals(newOwned)) {
             manga.setOwned(newOwned);
             MangaModel.getInstance().updateEntry(db, manga);
         }
 
         Log.d("TAG", "onBackPressed: pingy ping, " + newOwned);
-        toast("Going backwards");
+        //toast("Going backwards");
     }
 }

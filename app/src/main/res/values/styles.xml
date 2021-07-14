@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/dosis</item>
+    </style>
+
+    <style name="RobotoButtonStyle" parent="android:Widget.Button">
+        <item name="android:fontFamily">@font/dosis</item>
+    </style>
+
+    <style name="RobotoInputStyle" parent="android:Widget.EditText">
+        <item name="android:fontFamily">@font/dosis</item>
+    </style>
+
+    <style name="TitleStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/teko_light</item>
+        <item name="android:textColor">@color/primary_700</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+
+    <style name="BarTextStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/teko_light</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/white</item>
+
+    </style>
+
+</resources>

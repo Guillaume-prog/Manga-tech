@@ -11,11 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="CREATE AN ENTRY"
-        android:textSize="32sp"
-        android:textColor="@color/purple_500"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:layout_marginBottom="20dp"
-        android:gravity="center" />
+        style="@style/TitleStyle" />
 
     <EditText
         android:id="@+id/manga_name"
@@ -43,6 +39,7 @@
         android:layout_height="wrap_content"
         android:text="Add entry"
         android:layout_gravity="center"
+        android:textSize="18sp"
         android:layout_marginTop="20dp"/>
 
 </LinearLayout>
