@@ -1,8 +1,10 @@
 package dev.regucorp.manga_tech;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.os.Parcelable;
@@ -11,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -96,11 +99,23 @@ public class TabFragment extends Fragment {
 
         // Delete
         v.setOnLongClickListener(view -> {
-            ll.removeView(v);
-            MangaModel.getInstance().deleteEntry(db, entry);
+            Dialog d = createDialog(R.layout.confirm_delete_dialog);
+            d.show();
 
-            entries.remove(entry);
-            if(entries.size() == 0) showNoEntries();
+            Button delBtn = d.findViewById(R.id.delete_entry);
+            Button cancelBtn = d.findViewById(R.id.cancel_button);
+
+            delBtn.setOnClickListener(button -> {
+                ll.removeView(v);
+                MangaModel.getInstance().deleteEntry(db, entry);
+
+                entries.remove(entry);
+                if(entries.size() == 0) showNoEntries();
+                d.dismiss();
+            });
+
+            cancelBtn.setOnClickListener(button -> d.dismiss());
+
             return true;
         });
 
@@ -108,6 +123,14 @@ public class TabFragment extends Fragment {
         entries.add(entry);
 
         return v;
+    }
+
+    protected AlertDialog createDialog(int layout_id) {
+        View dialogView = getLayoutInflater().inflate(layout_id, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(dialogView);
+        return builder.create();
     }
 
 
