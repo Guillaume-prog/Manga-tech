@@ -53,7 +53,7 @@ public class MangaModel {
     public MangaEntry[] get(DataHandler db, int type) {
         MangaEntry[] entries = null;
 
-        Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ TABLE_NAME +" WHERE type = "+ type +";", null);
+        Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ TABLE_NAME +" WHERE type = ?;", new String[] {String.valueOf(type)});
         Log.d(TAG, "get: "+c.getCount());
         if(c.getCount() > 0) {
             entries = new MangaEntry[c.getCount()];
@@ -75,7 +75,7 @@ public class MangaModel {
     }
 
     public MangaEntry getByName(DataHandler db, String name) {
-        Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ TABLE_NAME +" WHERE name = '"+ name +"';", null);
+        Cursor c = db.getReadableDatabase().rawQuery("SELECT * FROM "+ TABLE_NAME +" WHERE name = ?;", new String[] {name});
 
         MangaEntry manga = null;
         if(c.moveToFirst()) {
@@ -93,8 +93,8 @@ public class MangaModel {
     }
 
     public void updateEntry(DataHandler db, MangaEntry entry) {
-        String sql = "UPDATE "+ TABLE_NAME +" SET owned = '" + entry.getOwned() + "' WHERE name = '" + entry.getName() + "';";
-        Cursor c = db.getWritableDatabase().rawQuery(sql, null);
+        String sql = "UPDATE "+ TABLE_NAME +" SET owned = ? WHERE name = ?;";
+        Cursor c = db.getWritableDatabase().rawQuery(sql, new String[] {entry.getOwned(), entry.getName()});
         Log.d(TAG, "updateEntry: "+sql);
 
         int numRows = c.getCount();
@@ -102,7 +102,6 @@ public class MangaModel {
     }
 
     public void deleteEntry(DataHandler db, MangaEntry entry) {
-        db.getWritableDatabase().delete(TABLE_NAME, "name = '" + entry.getName() +  "'", null);
-        //db.getWritableDatabase().execSQL("DELETE FROM "+ TABLE_NAME +" WHERE name = '"+ entry.getName() +"';");
+        db.getWritableDatabase().delete(TABLE_NAME, "name = ?", new String[] {entry.getName()});
     }
 }
