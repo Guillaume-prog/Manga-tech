@@ -35,7 +35,10 @@ public class TabFragment extends Fragment {
     private DataHandler db;
 
     private LinearLayout ll;
+    private TextView statsView;
     private View lastView;
+
+    private int numSeries, totalVolumes, lastViewNumVols = 0;
 
     public TabFragment(DataHandler db, MangaEntry[] entryList) {
         this.db = db;
@@ -46,6 +49,7 @@ public class TabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tab_fragment, container, false);
         ll = v.findViewById(R.id.fragment_list);
+        statsView = v.findViewById(R.id.manga_count);
 
         init();
 
@@ -61,6 +65,10 @@ public class TabFragment extends Fragment {
             String title = titleView.getText().toString();
 
             MangaEntry updatedEntry = MangaModel.getInstance().getByName(db, title);
+
+            totalVolumes += updatedEntry.getNumOwned() - lastViewNumVols;
+            updateStats();
+
             int oldIndex = ll.indexOfChild(lastView);
             ll.removeView(lastView);
 
@@ -70,6 +78,9 @@ public class TabFragment extends Fragment {
     }
 
     public void init() {
+        numSeries = 0;
+        totalVolumes = 0;
+
         if(startEntries != null) {
             for(MangaEntry e : startEntries) {
                 addManga(e);
@@ -79,8 +90,15 @@ public class TabFragment extends Fragment {
         }
     }
 
+    private void updateStats() {
+        statsView.setText(numSeries + " series - " + totalVolumes + " volumes");
+    }
+
     public void addManga(MangaEntry entry) {
         ll.addView(genManga(entry));
+        numSeries++;
+        totalVolumes += entry.getNumOwned();
+        updateStats();
     }
 
     public View genManga(MangaEntry entry) {
@@ -94,6 +112,7 @@ public class TabFragment extends Fragment {
         // Access manga vols
         v.setOnClickListener(view -> {
             lastView = v;
+            lastViewNumVols = entry.getNumOwned();
             sendToActivity(entry);
         });
 
@@ -108,6 +127,10 @@ public class TabFragment extends Fragment {
             delBtn.setOnClickListener(button -> {
                 ll.removeView(v);
                 MangaModel.getInstance().deleteEntry(db, entry);
+
+                numSeries--;
+                totalVolumes -= entry.getNumOwned();
+                updateStats();
 
                 entries.remove(entry);
                 if(entries.size() == 0) showNoEntries();

@@ -10,11 +10,28 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/fragment_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="100dp"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/manga_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0 series - 0 volumes"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="100dp"/>
+
+        </LinearLayout>
 
     </ScrollView>
 
